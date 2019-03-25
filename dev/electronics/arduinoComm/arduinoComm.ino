@@ -1,5 +1,5 @@
 
-int sensorValues[] = {100,100,100,100};
+int sensorValues[] = {100,100};
 
 void setup() {
   Serial.begin(9600); // set the baud rate
@@ -15,17 +15,20 @@ void loop() {
   // MESSAGE byte PROTOCOL [ID = 0->99, value = 100 -> 199]
 
   // ANALOG READING
-  sensorValues[0] = analogRead(A0);
-  sensorValues[1] = analogRead(A1);
-  sensorValues[2] = analogRead(A2);
-  sensorValues[3] = analogRead(A3);
+  int minSensor = 500;
+  int maxSensor = 1024;
+  sensorValues[0] = map(analogRead(A0),minSensor, maxSensor,100,200);
+  sensorValues[1] = map(analogRead(A1),minSensor, maxSensor,100,200);
 
-  float average1 = float(sensorValues[0] + sensorValues[1]) / 2;
-  float average2 = float(sensorValues[2] + sensorValues[3]) / 2;
+  sensorValues[0] = constrain(sensorValues[0], 100, 200);
+  sensorValues[1] = constrain(sensorValues[1], 100, 200);
   
-  sendSensorData(0,average1);
-  sendSensorData(1,average2);
-  
+  sendSensorData(0,sensorValues[0]);
+  sendSensorData(1,sensorValues[1]);
+
+  //Serial.println("---");
+
+  /*
   // DIGITAL PRE-TEST
   if (digitalRead(10) == HIGH) {
     sendSensorData(0, 10);
@@ -33,6 +36,9 @@ void loop() {
   if (digitalRead(11) == HIGH) {
     sendSensorData(1, 20);
   }
+  */
+
+  delay(100);
 
 
 }
